@@ -12,7 +12,7 @@ func InitializeRouter(r *gin.Engine) {
 	{
 		v1 := api.Group("/v1")
 		{
-			v1.GET("/loveme", controllers.LoveMe)
+			v1.GET("/doyouloveme", controllers.LoveMe)
 			v1.GET("/whatdowedo", controllers.WhatDoWeDo)
 		}
 	}
