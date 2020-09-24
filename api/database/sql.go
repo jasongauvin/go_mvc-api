@@ -2,51 +2,29 @@ package database
 
 import (
 	"fmt"
+	"log"
 
+	"github.com/jasongauvin/go_mvc-api/api/models"
 	"github.com/jinzhu/gorm"
+	_ "github.com/jinzhu/gorm/dialects/postgres"
 )
 
 var DB *gorm.DB
-var err error
 
-// DBConfig represents db configuration
-type DBConfig struct {
-	Host     string
-	Port     int
-	User     string
-	DBName   string
-	Password string
-}
+func InitializeDB(Dbdriver, DbUser, DbPassword, DbPort, DbHost, DbName string) {
 
-func buildDBConfig() *DBConfig {
-	dbConfig := DBConfig{
-		Host:     "localhost",
-		Port:     3306,
-		User:     "root",
-		Password: "root",
-		DBName:   "db",
-	}
-	return &dbConfig
-}
+	var err error
 
-func dbURL(dbConfig *DBConfig) string {
-	return fmt.Sprintf(
-		"%s:%s@tcp(%s:%d)/%s?charset=utf8&parseTime=True&loc=Local",
-		dbConfig.User,
-		dbConfig.Password,
-		dbConfig.Host,
-		dbConfig.Port,
-		dbConfig.DBName,
-	)
-}
-
-func InitializeDB() error {
 	// Connect Db
-	DB, err := gorm.Open("mysql", dbURL(buildDBConfig()))
-
+	DBURL := fmt.Sprintf("host=%s port=%s user=%s dbname=%s sslmode=disable password=%s", DbHost, DbPort, DbUser, DbName, DbPassword)
+	DB, err = gorm.Open(Dbdriver, DBURL)
 	if err != nil {
-		fmt.Println("Status:", err)
+		fmt.Printf("Cannot connect to %s database", Dbdriver)
+		log.Fatal("This is the error:", err)
+	} else {
+		fmt.Printf("We are connected to the %s database", Dbdriver)
 	}
-	defer DB.Close()
-	return err
+
+	DB.AutoMigrate(&models.Activity{})
+	fmt.Println("\n Migrations are OK ...")
 }
