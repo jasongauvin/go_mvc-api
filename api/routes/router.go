@@ -14,6 +14,7 @@ func InitializeRouter(r *gin.Engine) {
 		{
 			v1.GET("/doyouloveme", controllers.LoveMe)
 			v1.GET("/whatdowedo", controllers.WhatDoWeDo)
+			v1.GET("/gojira", controllers.Gojira)
 		}
 	}
 
